@@ -3,12 +3,20 @@ from datetime import datetime
 import random
 import json
 import os
+import logging
+import time
 
-#Third-party Libraries 
-#All of them are available in python 3.6+
+# Third-party Libraries
+# All of them are available in python 3.6+
+
 import httpx
 import trio
 from fake_useragent import UserAgent
+
+
+logging.basicConfig(
+    level=logging.INFO,
+)
 
 class Save_to_local:
     def __init__(self):
@@ -21,7 +29,7 @@ class Save_to_local:
         elif "json" in content_type:
             self.save_as_json(url, response_content)
         else:
-            print(f"Unhandled content type: {content_type}. Response not saved.")
+            print(f"\033[38;2;255;102;153mUnhandled content type:\033[0m \033[0m\033[38;5;118m{content_type}\033[0m. \033[38;2;255;102;153mResponse not saved.\033[0m ")
 
     def save_as_xml(self, url, response_content):
         filename = "response.xml"
@@ -100,7 +108,15 @@ class HTTP3Requester:
 
 
 if __name__ == "__main__":
-    url = "https:example.com/url"
+    url = "https://www.example.com/"
     requester = HTTP3Requester(url)
-    num_requests = 2  # Let the user decide how many times to send
+    num_requests = 1  # Let the user decide how many times to send
     requester.run(num_requests)
+    
+    logging.Formatter.converter = time.gmtime
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s.%(msecs)03dZ %(hostname)s %(app_name)s %(process_id)s %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S",
+    )
